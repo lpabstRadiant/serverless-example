@@ -1,0 +1,17 @@
+{
+  "name": "serverless-example",
+  "version": "1.0.0",
+  "description": "example code taken from serverless.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Loren Pabst",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.308.0",
+    "eslint-plugin-react": "^7.11.1",
+    "graphql": "^14.0.0",
+    "serverless": "^1.30.3"
+  }
+}
