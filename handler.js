@@ -24,7 +24,7 @@ const changeNickname = (firstName, nickname) => {
         dynamoDb.update({
             TableName: process.env.DYNAMODB_TABLE,
             Key: { firstName },
-            UpdateExpression: 'SET nickname = :nickname',
+            UpdateExpression: `SET nickname = :nickname`,
             ExpressionAttributeValues: {
                 ':nickname': nickname
             }
