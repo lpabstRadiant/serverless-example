@@ -1,4 +1,4 @@
-const { graphql, GraphQlSchema, GraphQlObjectType, GraphQlString, GraphQlNonNull } = require('graphql');
+const { graphql, GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -33,34 +33,34 @@ const changeNickname = (firstName, nickname) => {
     .then(() => nickname)
 }
 
-const schema = new GraphQlSchema({
-    query: new GraphQlObjectType({
+const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
         name: 'RootQueryType',
         fields: {
             greeting: {
                 args: { 
-                    firstname: {
+                    firstName: {
                         name: 'firstName',
-                        type: new GraphQlNonNull(GraphQlString)
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 },
-                type: GraphQlString,
+                type: GraphQLString,
                 resolve: ( parent, args ) => getGreeting(args.firstName)
             }
         }
     }),
-    mutation: new GraphQlObjectType({
+    mutation: new GraphQLObjectType({
         name: 'RootMutationType',
         fields: {
             changeNickname: {
                 args: {
                     firstName: {
                         name: 'firstName', 
-                        type: new GraphQlNonNull(GraphQlString),
+                        type: new GraphQLNonNull(GraphQLString),
                     },
                     nickname: {
                         name: 'nickname', 
-                        type: new GraphQlNonNull(GraphQlString),
+                        type: new GraphQLNonNull(GraphQLString),
                     }
                 },
                 type: GraphQLString,

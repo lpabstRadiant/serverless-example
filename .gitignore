@@ -4,3 +4,5 @@ jspm_packages
 .serverless
 
 .env
+
+config.js
