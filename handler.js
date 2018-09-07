@@ -1,5 +1,7 @@
 const { graphql, GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
+const { graphqlLambda } = require('graphql-server-lambda');
 const AWS = require('aws-sdk');
+
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const getGreeting = (firstName) => {
@@ -82,8 +84,65 @@ const promisify = (cb) => {
     return new Promise(promiseCB);
 }
 
-module.exports.query = ( event, context, callback ) => graphql(schema, event.queryStringParameters.query)
-.then(
-    result => callback(null, {statusCode: 200, body: JSON.stringify(result)}),
-    err => callback(err)
-)
+// module.exports.query = ( event, context, callback ) => graphql(schema, event.queryStringParameters.query)
+//     .then(
+//         result => callback(null, {statusCode: 200, headers: {"x-custom-header" : "My Header Value", 'Access-Control-Allow-Origin': '*'}, body: JSON.stringify(result)}),
+//         err => callback(err)
+//     )
+
+
+module.exports.query = ( event, context, callback ) => {
+    console.log(JSON.stringify(event));
+    console.log(JSON.stringify(context));
+    
+    graphql(schema, event.queryStringParameters.query)
+    .then(
+        result => {
+            console.log(result);
+            const response = {
+                statusCode: 200, 
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify(result)
+            }
+            
+            if (callback){
+                console.log(JSON.stringify(callback));
+                console.log('cb exists')
+            }else{
+                console.log('cb doesnt exist')
+            }
+            return callback(null, response);
+        },
+        err => callback(err)
+    )
+}
+
+// module.exports.query = ( event, context, callback ) => {
+//     let callbackFilter = (error, output) => {
+//       output.headers = { "Access-Control-Allow-Origin": "*", "Content-Type":"application/json" };
+//       callback(error, output);
+//     };
+  
+//     let handler = graphqlLambda(() => ({
+//       schema,
+//       context: {
+//         headers: event.headers
+//       }
+//     }));
+  
+//     handler(event, context, callbackFilter);
+// }
+
+// module.exports.query = ( event, context, callback ) => {
+//     context.callbackWaitsForEmptyEventLoop = false;
+//     function callbackFilter(error, output){
+//         if (!output.headers) output.headers = {};
+//         output.headers['Access-Control-Allow-Origin'] = '*';
+//         callback(error, output);
+//     }
+    
+//     const handler = graphqlLambda({schema});
+//     return handler(event, context, callbackFilter);
+// }
