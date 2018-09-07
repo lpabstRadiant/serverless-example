@@ -4,4 +4,29 @@
     position: relative;
 }
 
+.managementDiv{
+    width: 600px;
+    margin: 100px auto 0 auto;
+}
 
+.controls{
+    margin-top: 20px;
+}
+
+.controls input{
+    width: 300px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
+    padding-left: 5px;
+    display: block;
+    margin-top: 5px;
+}
+
+.controls button{
+    width: 160px;
+    height: 28px;
+    font-size: 14px;
+    display: block;
+    margin-top: 5px;
+}

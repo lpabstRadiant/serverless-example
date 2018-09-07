@@ -7,6 +7,17 @@ functions:
       - http:
           path: query
           method: get
+          cors:
+            origins:
+              - 'http://localhost:3000'
+            headers:
+              - MY_CUSTOM_HEADER
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
 
 provider:
   name: aws
@@ -17,9 +28,8 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:GetItem
-        - dynamodb:UpdateItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - dynamodb:*
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
 
 resources:
   Resources:
