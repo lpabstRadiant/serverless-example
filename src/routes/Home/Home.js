@@ -10,7 +10,7 @@ class Home extends Component {
       firstNameInput: '',
       nicknameInput: '',
       baseUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/query',
-      radiantUrl: 'https://api.radiant.engineering/Radiant/graphiql',
+      radiantUrl: 'https://api.radiant.engineering/Radiant/graphql',
     }
 
     this.getNickname = this.getNickname.bind(this);
@@ -26,17 +26,15 @@ class Home extends Component {
     
     axios.get(axiosUrl, {
       headers: {
-        'Content-Type' : 'application/json',
+        // 'Content-Type' : 'application/json',
         // 'MY_CUSTOM_HEADER': 'MY_CUSTOM_HEADER_VALUE'
       }, 
     })
     .then( res => {
       console.log(res);
     })
-    .catch( err => {
-      console.log(JSON.stringify(err));
-    })
-
+    .catch( err => console.log(JSON.stringify(err)) )
+    
   }
   
   updateNickname(){
@@ -49,13 +47,14 @@ class Home extends Component {
     .then( res => {
       console.log(res);
     })
+    .catch( err => console.log(JSON.stringify(err)) )
     
   }
   
   radiantTest(){
     let { radiantUrl } = this.state;
     let queryParams = encodeURIComponent(`?query={
-      searchForCommunity(query: "R") { 
+      authenticateUser(id: "R") { 
         communities{
           name
           publicImageUrl
@@ -70,6 +69,7 @@ class Home extends Component {
     .then( res => {
       console.log(res);
     })
+    .catch( err => console.log(JSON.stringify(err)) )
     
     
   }
