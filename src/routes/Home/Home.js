@@ -54,18 +54,18 @@ class Home extends Component {
   radiantTest(){
     let { radiantUrl } = this.state;
     let queryParams = encodeURIComponent(`?query={
-      authenticateUser(id: "R") { 
-        communities{
-          name
-          publicImageUrl
-          groupsCount
-        }
+      authenticateUser(authCode: "R") { 
+        token
       } 
     }`);
     let axiosUrl = radiantUrl + queryParams;
     console.log(axiosUrl);
     
-    axios.get(axiosUrl)
+    axios.get(axiosUrl, {
+      headers: {
+        'Authorization': 'bearer hher=23435'
+      }
+    })
     .then( res => {
       console.log(res);
     })
