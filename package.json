@@ -13,15 +13,17 @@
   "author": "Loren Pabst",
   "license": "ISC",
   "dependencies": {
+    "apollo-boost": "^0.1.15",
     "apollo-server-lambda": "^2.0.6",
     "aws-sdk": "^2.308.0",
     "axios": "^0.18.0",
     "eslint-plugin-react": "^7.11.1",
-    "graphql": "^14.0.0",
+    "graphql": "^14.0.2",
     "graphql-react": "^2.0.0",
     "graphql-server-lambda": "^1.4.0",
     "middy": "^0.17.1",
     "react": "^16.4.2",
+    "react-apollo": "^2.1.11",
     "react-dom": "^16.4.2",
     "react-router-dom": "^4.3.1",
     "serverless": "^1.30.3"

@@ -7,17 +7,7 @@ functions:
       - http:
           path: query
           method: get
-          cors:
-            origins:
-              - 'http://localhost:3000'
-            headers:
-              - MY_CUSTOM_HEADER
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-            allowCredentials: false
+          cors: true
 
 provider:
   name: aws

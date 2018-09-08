@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Home.css';
 
-
 class Home extends Component {
   constructor(props){
     super(props);
     this.state = {
       firstNameInput: '',
       nicknameInput: '',
-      baseUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/query',
-      radiantUrl: 'https://api.radiant.engineering/Radiant/graphiql',
+      baseUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/query?query=',
+      radiantUrl: 'https://api.radiant.engineering/Radiant/graphql?query=',
     }
 
     this.getNickname = this.getNickname.bind(this);
@@ -20,58 +19,50 @@ class Home extends Component {
 
   getNickname(){
     let { firstNameInput, baseUrl } = this.state;
-    let queryParams = `?query={greeting(firstName: "${firstNameInput}")}`;
+    let queryParams = encodeURIComponent(`{greeting(firstName:"${firstNameInput}")}`);
     let axiosUrl = baseUrl + queryParams;
     console.log(axiosUrl);
     
-    axios.get(axiosUrl, {
-      headers: {
-        'Content-Type' : 'application/json',
-        // 'MY_CUSTOM_HEADER': 'MY_CUSTOM_HEADER_VALUE'
-      }, 
-    })
+    axios.get(axiosUrl)
     .then( res => {
-      console.log(res);
+      if (!res.data || !res.data.data || !res.data.data.greeting){
+        console.log(res);
+        alert('Error, please check the console to see the response')
+      }else{
+        alert(res.data.data.greeting);
+      }
     })
-    .catch( err => {
-      console.log(JSON.stringify(err));
-    })
-
+    .catch( err => console.log(JSON.stringify(err)) )
   }
   
   updateNickname(){
     let { firstNameInput, nicknameInput, baseUrl } = this.state;
-    let queryParams = `?query=mutation {changeNickname(firstName: "${firstNameInput}", nickname: "${nicknameInput}")}`;
+    let queryParams = encodeURIComponent(`mutation{changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")}`);
     let axiosUrl = baseUrl + queryParams;
-    console.log(axiosUrl);
-    
-    axios.post(axiosUrl)
-    .then( res => {
-      console.log(res);
-    })
-    
-  }
-  
-  radiantTest(){
-    let { radiantUrl } = this.state;
-    let queryParams = encodeURIComponent(`?query={
-      searchForCommunity(query: "R") { 
-        communities{
-          name
-          publicImageUrl
-          groupsCount
-        }
-      } 
-    }`);
-    let axiosUrl = radiantUrl + queryParams;
     console.log(axiosUrl);
     
     axios.get(axiosUrl)
     .then( res => {
       console.log(res);
     })
+    .catch( err => console.log(JSON.stringify(err)) )
+  }
+  
+  radiantTest(){
+    let { radiantUrl } = this.state;
+    let queryParams = encodeURIComponent(`{authenticateUser(authCode:"R"){token}}`);
+    let axiosUrl = radiantUrl + queryParams;
+    console.log(axiosUrl);
     
-    
+    axios.get(axiosUrl, {
+      headers: {
+        'Authorization': 'bearer hher=23435',
+      }
+    })
+    .then( res => {
+      console.log(res);
+    })
+    .catch( err => console.log(JSON.stringify(err)) )
   }
 
   render() {
@@ -96,6 +87,5 @@ class Home extends Component {
     );
   }
 }
-
 
 export default Home;
