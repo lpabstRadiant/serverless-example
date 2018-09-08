@@ -19,7 +19,13 @@ class Home extends Component {
 
   getNickname(){
     let { firstNameInput, baseUrl } = this.state;
-    let queryParams = encodeURIComponent(`{greeting(firstName:"${firstNameInput}")}`);
+    if (!firstNameInput) return alert('please fill out the firstname field to continue');
+
+    let queryParams = encodeURIComponent(`
+      {
+        greeting(firstName: "${firstNameInput}")
+      }
+    `);
     let axiosUrl = baseUrl + queryParams;
     console.log(axiosUrl);
     
@@ -37,13 +43,19 @@ class Home extends Component {
   
   updateNickname(){
     let { firstNameInput, nicknameInput, baseUrl } = this.state;
-    let queryParams = encodeURIComponent(`mutation{changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")}`);
+    if (!firstNameInput || !nicknameInput) return alert('Please fill out both firstname and nickname fields to continue');
+
+    let queryParams = encodeURIComponent(`mutation{
+      changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")
+    }`);
     let axiosUrl = baseUrl + queryParams;
     console.log(axiosUrl);
     
     axios.get(axiosUrl)
     .then( res => {
       console.log(res);
+      if (!res.data ||!res.data.data || !res.data.data.changeNickname) return alert('Error, please check the console to see the response');
+      return alert('Nickname updated to ' + res.data.data.changeNickname);
     })
     .catch( err => console.log(JSON.stringify(err)) )
   }
@@ -79,7 +91,7 @@ class Home extends Component {
               <button onClick={()=>this.updateNickname()} >Update Nickname</button>
             </div>
 
-            <button onClick={ ()=>this.radiantTest() } >Radiant Test</button>
+            {/* <button onClick={ ()=>this.radiantTest() } >Radiant Test</button> */}
           
           </div>
 
