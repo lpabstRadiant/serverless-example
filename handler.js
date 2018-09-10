@@ -105,6 +105,26 @@ module.exports.query = ( event, context, callback ) => {
                 },
                 body: JSON.stringify(result)
             }
+            
+            return callback(null, response);
+        },
+        err => callback(err)
+    )
+}
+
+module.exports.mutation = (event, context, callback) => {
+    let {mutation} = event.queryStringParameters;
+    
+    graphql(schema, mutation)
+    .then( 
+        res => {
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(res),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
 
             return callback(null, response);
         },
