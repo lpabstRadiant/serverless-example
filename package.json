@@ -21,6 +21,7 @@
     "graphql": "^14.0.2",
     "graphql-react": "^2.0.0",
     "graphql-server-lambda": "^1.4.0",
+    "graphql-tag": "^2.9.2",
     "middy": "^0.17.1",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
