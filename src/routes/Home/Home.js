@@ -86,8 +86,8 @@ class Home extends Component {
             <p>Nickname Management</p>
             
             <div className='controls'>
-              <input placeholder='firstname' onChange={(e) => this.setState({firstNameInput: e.target.value})} />
-              <input placeholder='new nickname' onChange={(e) => this.setState({nicknameInput: e.target.value})} />
+              <input placeholder='firstname' value={this.state.firstNameInput} onChange={(e) => this.setState({firstNameInput: e.target.value})} />
+              <input placeholder='new nickname' value={this.state.nicknameInput} onChange={(e) => this.setState({nicknameInput: e.target.value})} />
               <button onClick={()=>this.getNickname()} >Get Nickname</button>
               <button onClick={()=>this.updateNickname()} >Update Nickname</button>
             </div>
