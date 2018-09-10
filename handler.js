@@ -91,40 +91,60 @@ const promisify = (cb) => {
 //     )
 
 
-// module.exports.query = ( event, context, callback ) => {
-//     graphql(schema, event.queryStringParameters.query)
-//     .then(
-//         result => {
-//             // console.log(result);
-//             const response = {
-//                 statusCode: 200, 
-//                 headers: {
-//                     'Access-Control-Allow-Origin': '*',
-//                     'Access-Control-Allow-Headers': '*',
-//                     'Access-Control-Allow-Methods': '*',
-//                 },
-//                 body: JSON.stringify(result)
-//             }
-
-//             return callback(null, response);
-//         },
-//         err => callback(err)
-//     )
-// }
-
 module.exports.query = ( event, context, callback ) => {
-    let callbackFilter = (error, output) => {
-      output.headers = { "Access-Control-Allow-Origin": "*", "Content-Type":"application/json" };
-      callback(error, output);
-    };
-  
-    let handler = graphqlLambda(() => ({
-      schema,
-      context: {
-        headers: event.headers
-      }
-    }));
-  
-    handler(event, context, callbackFilter);
+    graphql(schema, event.queryStringParameters.query)
+    .then(
+        result => {
+            // console.log(result);
+            const response = {
+                statusCode: 200, 
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*',
+                    'Access-Control-Allow-Methods': '*',
+                },
+                body: JSON.stringify(result)
+            }
+            
+            return callback(null, response);
+        },
+        err => callback(err)
+    )
 }
+
+module.exports.mutation = (event, context, callback) => {
+    let {mutation} = event.queryStringParameters;
+    
+    graphql(schema, mutation)
+    .then( 
+        res => {
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(res),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+
+            return callback(null, response);
+        },
+        err => callback(err)
+    )
+}
+
+// module.exports.query = ( event, context, callback ) => {
+//     let callbackFilter = (error, output) => {
+//       output.headers = { "Access-Control-Allow-Origin": "*", "Content-Type":"application/json" };
+//       callback(error, output);
+//     };
+  
+//     let handler = graphqlLambda(() => ({
+//       schema,
+//       context: {
+//         headers: event.headers
+//       }
+//     }));
+  
+//     handler(event, context, callbackFilter);
+// }
 

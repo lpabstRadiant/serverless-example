@@ -8,8 +8,9 @@ class Home extends Component {
     this.state = {
       firstNameInput: '',
       nicknameInput: '',
-      baseUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/query?query=',
-      radiantUrl: 'https://api.radiant.engineering/Radiant/graphql?query=',
+      baseQueryUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/query?query=',
+      baseMutationUrl: 'https://20n4h1kewa.execute-api.us-east-1.amazonaws.com/dev/mutation?mutation=',
+      radiantUrl: 'https://api.radiant.engineering/Radiant/graphql',
     }
 
     this.getNickname = this.getNickname.bind(this);
@@ -18,9 +19,15 @@ class Home extends Component {
   }
 
   getNickname(){
-    let { firstNameInput, baseUrl } = this.state;
-    let queryParams = encodeURIComponent(`{greeting(firstName:"${firstNameInput}")}`);
-    let axiosUrl = baseUrl + queryParams;
+    let { firstNameInput, baseQueryUrl } = this.state;
+    if (!firstNameInput) return alert('please fill out the firstname field to continue');
+
+    let queryParams = encodeURIComponent(`
+      {
+        greeting(firstName: "${firstNameInput}")
+      }
+    `);
+    let axiosUrl = baseQueryUrl + queryParams;
     console.log(axiosUrl);
     
     axios.get(axiosUrl)
@@ -36,14 +43,20 @@ class Home extends Component {
   }
   
   updateNickname(){
-    let { firstNameInput, nicknameInput, baseUrl } = this.state;
-    let queryParams = encodeURIComponent(`mutation{changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")}`);
-    let axiosUrl = baseUrl + queryParams;
+    let { firstNameInput, nicknameInput, baseMutationUrl } = this.state;
+    if (!firstNameInput || !nicknameInput) return alert('Please fill out both firstname and nickname fields to continue');
+
+    let queryParams = encodeURIComponent(`mutation{
+      changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")
+    }`);
+    let axiosUrl = baseMutationUrl + queryParams;
     console.log(axiosUrl);
     
-    axios.get(axiosUrl)
+    axios.post(axiosUrl)
     .then( res => {
       console.log(res);
+      if (!res.data ||!res.data.data || !res.data.data.changeNickname) return alert('Error, please check the console to see the response');
+      return alert('Nickname updated to ' + res.data.data.changeNickname);
     })
     .catch( err => console.log(JSON.stringify(err)) )
   }
@@ -51,7 +64,7 @@ class Home extends Component {
   radiantTest(){
     let { radiantUrl } = this.state;
     let queryParams = encodeURIComponent(`{authenticateUser(authCode:"R"){token}}`);
-    let axiosUrl = radiantUrl + queryParams;
+    let axiosUrl = radiantUrl + '?query=' + queryParams;
     console.log(axiosUrl);
     
     axios.get(axiosUrl, {
@@ -79,7 +92,7 @@ class Home extends Component {
               <button onClick={()=>this.updateNickname()} >Update Nickname</button>
             </div>
 
-            <button onClick={ ()=>this.radiantTest() } >Radiant Test</button>
+            {/* <button onClick={ ()=>this.radiantTest() } >Radiant Test</button> */}
           
           </div>
 

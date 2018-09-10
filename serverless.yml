@@ -9,6 +9,14 @@ functions:
           method: get
           cors: true
 
+  mutation:
+    handler: handler.mutation
+    events:
+      - http:
+          path: mutation
+          method: post
+          cors: true
+
 provider:
   name: aws
   runtime: nodejs6.10
