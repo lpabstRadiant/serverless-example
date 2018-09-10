@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Home.css';
 
+// graphql helper functions
+import { fetch, mutate } from './../../graphql/graphql.ts';
+import gql from 'graphql-tag';
+
 class Home extends Component {
   constructor(props){
     super(props);
@@ -14,18 +18,20 @@ class Home extends Component {
     }
 
     this.getNickname = this.getNickname.bind(this);
+    this.getNicknameWithLibrary = this.getNicknameWithLibrary.bind(this);
     this.updateNickname = this.updateNickname.bind(this);
+    this.updateNicknameWithLibrary = this.updateNicknameWithLibrary.bind(this);
     this.radiantTest = this.radiantTest.bind(this);
   }
 
   getNickname(){
     let { firstNameInput, baseQueryUrl } = this.state;
     if (!firstNameInput) return alert('please fill out the firstname field to continue');
-
+    
     let queryParams = encodeURIComponent(`
-      {
-        greeting(firstName: "${firstNameInput}")
-      }
+    {
+      greeting(firstName: "${firstNameInput}")
+    }
     `);
     let axiosUrl = baseQueryUrl + queryParams;
     console.log(axiosUrl);
@@ -42,10 +48,34 @@ class Home extends Component {
     .catch( err => console.log(JSON.stringify(err)) )
   }
   
+  getNicknameWithLibrary(){
+    let { firstNameInput } = this.state;
+    if (!firstNameInput) return alert('please fill out the firstname field to continue');
+
+    let query = gql`
+      {
+        greeting(firstName: "${firstNameInput}")
+      }
+    `;
+    let options = {
+      fetchPolicy: 'network-only'
+    };
+
+    fetch(query, options)
+    .then( ({res}) => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(JSON.stringify(err));
+      return err;
+    });
+
+  }
+  
   updateNickname(){
     let { firstNameInput, nicknameInput, baseMutationUrl } = this.state;
     if (!firstNameInput || !nicknameInput) return alert('Please fill out both firstname and nickname fields to continue');
-
+    
     let queryParams = encodeURIComponent(`mutation{
       changeNickname(firstName:"${firstNameInput}",nickname:"${nicknameInput}")
     }`);
@@ -59,6 +89,31 @@ class Home extends Component {
       return alert('Nickname updated to ' + res.data.data.changeNickname);
     })
     .catch( err => console.log(JSON.stringify(err)) )
+  }
+  
+  updateNicknameWithLibrary(){
+    let { firstNameInput, nicknameInput } = this.state;
+    if (!firstNameInput || !nicknameInput) return alert('Please fill out both firstname and nickname fields to continue');
+
+    let mutation = gql`
+      mutation{
+        changeNickname(firstName: "$firstName", nickname: "$nickname")
+      }
+    `;
+    let options = {
+      variables:{
+        firstName: firstNameInput,
+        nickname: nicknameInput
+      }
+    };
+
+    mutate(mutation, options)
+    .then( res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
   
   radiantTest(){
